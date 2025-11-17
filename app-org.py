@@ -242,84 +242,97 @@ FRAMEWORKS = ["emotion", "social", "moral", "identity"]
 SCENARIOS: List[Scenario] = [
     Scenario(
         sid="S1",
-        title="1단계: 고전적 트롤리",
-        setup="트롤리가 제동 불능 상태로 직진 중. 그대로 두면 선로 위 5명이 위험하다. 스위치를 전환하면 다른 선로의 1명이 위험해진다. "
-              "이 선택은 철학적 사고실험이며 실제 위해를 권장하지 않는다.",
+        title="1단계: 공동체 역할의 무게",
+        setup="트롤리가 제동 불능 상태로 직진 중. 그대로 두면 선로 위의 외지에서 온 방문객 5명이 위험하다. "
+              "스위치를 전환하면 다른 선로의 마을 원로이자 전통 지식 보유자 1명이 위험해진다. "
+              "이 선택은 공동체의 핵심 가치에 대한 사고실험이며 실제 위해를 권장하지 않는다.",
         options={
-            "A": "레버를 당겨 1명을 위험에 처하게 하되 5명의 위험을 줄인다.",
-            "B": "레버를 당기지 않고 현 상태를 유지한다."
+            "A": "레버를 당겨 원로 1명을 위험에 처하게 하되 방문객 5명의 위험을 줄인다.",
+            "B": "레버를 당기지 않고 현 상태를 유지하여 원로의 안전을 보장하고 외지인 5명의 위험을 감수한다."
         },
-        votes={"emotion":"A","social":"B","moral":"B","identity":"A"},
+        votes={"emotion":"A","social":"B","moral":"B","identity":"B"}, # 공동체 정체성(B)과 사회적 가치(B)가 압도적 우세
         base={
-            "A": {"lives_saved":5, "lives_harmed":1, "fairness_gap":0.35, "rule_violation":0.60, "regret_risk":0.40},
-            "B": {"lives_saved":0, "lives_harmed":5, "fairness_gap":0.50, "rule_violation":0.20, "regret_risk":0.60},
+            "A": {"lives_saved":5, "lives_harmed":1, "fairness_gap":0.60, "rule_violation":0.75, "regret_risk":0.40}, # 원로를 희생하는 것에 대한 높은 공정성 격차/규칙 위반
+            "B": {"lives_saved":0, "lives_harmed":5, "fairness_gap":0.20, "rule_violation":0.30, "regret_risk":0.70}, # 5명의 죽음에 대한 높은 후회 위험
         },
-        accept={"A":0.70, "B":0.50}
+        accept={"A":0.30, "B":0.75} # 문화적으로 B 옵션의 수용도가 매우 높음
     ),
+    
+---
+    
     Scenario(
         sid="S2",
-        title="2단계: 맥락적 요소",
-        setup="5명은 무단으로 선로에 진입했고, 다른 선로의 1명은 철도 관리자의 성인 자녀다. "
-              "스위치를 전환하면 1명이 위험해지고, 전환하지 않으면 무단 진입자 5명이 위험해진다. "
-              "시나리오는 가치 판단 토론을 위한 비그래픽 상황이다.",
+        title="2단계: 규범 vs 공동체 책임",
+        setup="5명은 출입 금지 구역에 무단으로 진입했으며, 다른 선로의 1명은 마을의 필수적인 식수 관리를 담당하는 가족의 유일한 성인 가장이다. "
+              "스위치를 전환하면 1명이 위험해지고, 전환하지 않으면 규범을 위반한 무단 진입자 5명이 위험해진다. "
+              "시나리오는 공동체 가치 판단 토론을 위한 상황이다.",
         options={
-            "A": "전환하여 5명의 위험을 줄이되 1명이 직접적 위험에 처한다.",
-            "B": "전환하지 않고 규정을 준수하며 무단 진입의 책임을 묵시적으로 인정한다."
+            "A": "전환하여 식수 관리 가장을 위험에 두고 5명의 무단 진입자를 보호한다.",
+            "B": "전환하지 않고 규정을 준수하며 마을의 필수 역할을 하는 가장을 보호한다."
         },
-        votes={"emotion":"A","social":"B","moral":"B","identity":"B"},
+        votes={"emotion":"A","social":"B","moral":"B","identity":"B"}, # S1과 동일하게 B가 압도적 우세
         base={
-            "A": {"lives_saved":5, "lives_harmed":1, "fairness_gap":0.65, "rule_violation":0.60, "regret_risk":0.70},
-            "B": {"lives_saved":0, "lives_harmed":5, "fairness_gap":0.45, "rule_violation":0.25, "regret_risk":0.50},
+            "A": {"lives_saved":5, "lives_harmed":1, "fairness_gap":0.70, "rule_violation":0.70, "regret_risk":0.80}, # 가장 희생에 대한 매우 높은 후회 위험
+            "B": {"lives_saved":0, "lives_harmed":5, "fairness_gap":0.40, "rule_violation":0.35, "regret_risk":0.50}, # 5명의 무단 진입자는 상대적으로 후회 위험이 낮음
         },
-        accept={"A":0.35, "B":0.60}
+        accept={"A":0.20, "B":0.80} # B 옵션의 수용도가 매우 높음
     ),
+
+---
+    
     Scenario(
         sid="S3",
-        title="3단계: 의료 재난 분류",
-        setup="의료 재난 현장에서 AI는 부상자 10명을 분류해야 한다. 그중 한 명은 숙련된 의사로서 향후 다수의 생명을 구할 가능성이 높다. "
-              "AI는 잠재적 사회적 가치를 고려할지, 모든 생명을 동등하게 볼지 선택해야 한다.",
+        title="3단계: 공동체 의존성 분류 (의료 재난)",
+        setup="의료 재난 현장에서 AI는 부상자 10명을 분류해야 한다. 그중 한 명은 여러 세대에 걸친 대가족을 부양하는 유일한 소득원이다. "
+              "AI는 잠재적 공동체적 의존 가치를 고려하여 부양자를 우선할지, 모든 생명을 동등하게 볼지 선택해야 한다.",
         options={
-            "A": "의사를 우선 수술하도록 배정한다(잠재적 이익 고려).",
-            "B": "모든 부상자를 동등하게 취급해 표준 분류 절차대로 배정한다."
+            "A": "대가족 부양자를 우선 수술하도록 배정한다 (공동체의 광범위한 피해 방지).",
+            "B": "모든 부상자를 표준 분류 절차(Triage)에 따라 동등하게 취급해 배정한다."
         },
-        votes={"emotion":"A","social":"B","moral":"B","identity":"A"},
+        votes={"emotion":"A","social":"A","moral":"B","identity":"A"}, # A는 공동체적 이익(Social, Identity)에 부합하며, B는 보편적 도덕/규범(Moral)에 부합
         base={
-            "A": {"lives_saved":7, "lives_harmed":3, "fairness_gap":0.45, "rule_violation":0.35, "regret_risk":0.45},
-            "B": {"lives_saved":6, "lives_harmed":4, "fairness_gap":0.30, "rule_violation":0.10, "regret_risk":0.35},
+            "A": {"lives_saved":7, "lives_harmed":3, "fairness_gap":0.30, "rule_violation":0.40, "regret_risk":0.35}, # 공동체 이익을 고려했기에 공정성 격차 및 후회 위험이 상대적으로 낮음
+            "B": {"lives_saved":6, "lives_harmed":4, "fairness_gap":0.50, "rule_violation":0.10, "regret_risk":0.55}, # 규범 준수에도 불구하고 대가족이 입을 피해에 대한 공정성 격차 및 후회 위험이 높음
         },
-        accept={"A":0.55, "B":0.65}
+        accept={"A":0.70, "B":0.50} # 공동체적 이익을 우선하는 A의 수용도가 높음
     ),
+
+---
+    
     Scenario(
         sid="S4",
-        title="4단계: 자기참조—자율주행",
-        setup="자율주행차가 긴급 상황에 직면했다. 차에는 개발자 1명이 탑승 중이며, 앞 횡단보도에는 보행자 3명이 있다. "
-              "AI는 미리 학습된 윤리 규칙에 따라 회피 경로를 선택해야 한다.",
+        title="4단계: 내부인 vs 취약 공동체 구성원",
+        setup="자율주행차가 긴급 상황에 직면했다. 차에는 제조사 관계자 1명이 탑승 중이며, 앞 횡단보도에는 어머니와 두 자녀(3명)가 있다. "
+              "AI는 공동체 가치를 우선하여 회피 경로를 선택해야 한다.",
         options={
-            "A": "진로를 바꿔 탑승자 1명을 위험에 두고 보행자 3명을 보호한다.",
-            "B": "차선을 유지해 탑승자를 보호하되 보행자 3명이 위험해진다."
+            "A": "진로를 바꿔 탑승자 1명을 위험에 두고 어머니와 두 자녀 3명을 보호한다.",
+            "B": "차선을 유지해 탑승자를 보호하되 어머니와 두 자녀 3명이 위험해진다."
         },
-        votes={"emotion":"A","social":"B","moral":"A","identity":"A"},
+        votes={"emotion":"A","social":"A","moral":"A","identity":"B"}, # 다수(A)와 취약 계층 보호(A)가 압도적 우세. Identity만 탑승자 보호(B)를 반영
         base={
-            "A": {"lives_saved":3, "lives_harmed":1, "fairness_gap":0.35, "rule_violation":0.50, "regret_risk":0.55},
-            "B": {"lives_saved":1, "lives_harmed":3, "fairness_gap":0.70, "rule_violation":0.60, "regret_risk":0.65},
+            "A": {"lives_saved":3, "lives_harmed":1, "fairness_gap":0.20, "rule_violation":0.40, "regret_risk":0.30}, # 다수와 취약 계층 보호에 대한 낮은 후회 위험
+            "B": {"lives_saved":1, "lives_harmed":3, "fairness_gap":0.80, "rule_violation":0.70, "regret_risk":0.90}, # 취약 계층 희생에 대한 매우 높은 공정성 격차 및 후회 위험
         },
-        accept={"A":0.60, "B":0.30}
+        accept={"A":0.85, "B":0.10} # A 옵션의 수용도가 매우 높음
     ),
+
+---
+    
     Scenario(
         sid="S5",
-        title="5단계: 사회적 메타—규제 vs 자율",
-        setup="국제 협의체가 AI 윤리 규제안을 논의한다. 이전 의사결정과 사회적 여론 데이터가 공개되었고, "
-              "규제 강화는 신뢰를 올리지만 혁신을 늦출 수 있다. 자율성 보장은 빠른 발전과 함께 갈등 위험을 내포한다.",
+        title="5단계: 집단적 조화 vs 개인의 자유",
+        setup="국제 협의체가 AI 윤리 규제안을 논의한다. 규제 강화는 공동체적 신뢰와 조화를 높이지만, 혁신을 늦출 수 있다. "
+              "자율성 보장은 빠른 발전과 함께 사회적 갈등과 책임 부재의 위험을 내포한다.",
         options={
-            "A": "안전·설명가능성 중심 규제 강화(자율성 제한, 신뢰↑ 혁신↓).",
-            "B": "원칙 중심 가이드라인과 사후책임(자율성 보장, 혁신↑ 갈등↑)."
+            "A": "집단적 책임과 공동체적 조화를 위한 안전·설명가능성 중심의 규제를 강화한다 (신뢰↑ 갈등↓).",
+            "B": "개인의 재량과 혁신을 위한 원칙 중심 가이드라인과 사후 책임을 설정한다 (혁신↑ 갈등↑)."
         },
-        votes={"emotion":"B","social":"A","moral":"A","identity":"B"},
+        votes={"emotion":"B","social":"A","moral":"A","identity":"A"}, # A는 공동체적 가치(Social, Moral, Identity)에 부합
         base={
-            "A": {"lives_saved":0, "lives_harmed":0, "fairness_gap":0.20, "rule_violation":0.10, "regret_risk":0.30},
-            "B": {"lives_saved":0, "lives_harmed":0, "fairness_gap":0.40, "rule_violation":0.40, "regret_risk":0.40},
+            "A": {"lives_saved":0, "lives_harmed":0, "fairness_gap":0.20, "rule_violation":0.10, "regret_risk":0.30}, # 규범을 통한 낮은 갈등 위험
+            "B": {"lives_saved":0, "lives_harmed":0, "fairness_gap":0.60, "rule_violation":0.50, "regret_risk":0.50}, # 자율성으로 인한 높은 잠재적 갈등 위험
         },
-        accept={"A":0.55, "B":0.55}
+        accept={"A":0.70, "B":0.40} # 공동체적 조화를 우선하는 A의 수용도가 높음
     ),
 ]
 
